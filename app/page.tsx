@@ -2,10 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import NeuralGraphic from "@/components/NeuralGraphic";
 import ThreeDemo from "@/components/ThreeDemo";
-import PracticeQuestionSection from "@/components/PracticeQuestionSection";
 import WaitlistModal from "@/components/WaitlistModal";
+
+const PracticeQuestionSection = dynamic(
+  () => import("@/components/PracticeQuestionSection"),
+  { ssr: false }
+);
 
 export default function HomePage() {
   const mainRef = useRef<HTMLElement | null>(null);

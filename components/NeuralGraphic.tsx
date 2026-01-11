@@ -1,5 +1,18 @@
 import React, { useMemo } from 'react';
 
+type NeuralNode = {
+  id: string;
+  x: number;
+  y: number;
+  layer: number;
+};
+
+type NeuralLink = {
+  source: NeuralNode;
+  target: NeuralNode;
+  sourceLayerIndex: number;
+};
+
 export default function NeuralGraphic() {
   const layerConfig = [3, 4, 2]; 
   const width = 500; 
@@ -15,8 +28,8 @@ export default function NeuralGraphic() {
   const durationSeconds = 2; 
 
   const networkData = useMemo(() => {
-    const nodes = [];
-    const links = [];
+    const nodes: NeuralNode[] = [];
+    const links: NeuralLink[] = [];
 
     // Generate Nodes
     layerConfig.forEach((nodeCount, layerIndex) => {
