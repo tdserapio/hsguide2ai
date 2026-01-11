@@ -13,39 +13,35 @@ type Choice = {
 const choices: Choice[] = [
   {
     key: "A",
-    latex:
-      "-\\sum_{i=1}^{n}\\Big[y_i\\log(\\hat{y}_i) + (1-y_i)\\log(1-\\hat{y}_i)\\Big]",
+    latex: "\\arg\\max_x \\lVert y + Wx \\rVert_2^2",
     explanation:
-      "This resembles cross-entropy, but it uses \\(\\hat{y}_i\\) ambiguously instead of the model probability \\(p_i=\\sigma(x_i^\\top w)\\). The question expects the standard logistic regression NLL form.",
-    comment: "Close. "
+      "Linear regression minimizes squared error, not maximizes it. Additionally, the optimization variable should be the model parameters, not the input.",
+    comment: "Incorrect. "
   },
   {
     key: "B",
-    latex:
-      "-\\sum_{i=1}^{n}\\left[y_i(x_i^{\\top}w) - \\log\\left(1+e^{x_i^{\\top}w}\\right)\\right]",
+    latex: "\\arg\\min_y \\lVert y - Wx \\rVert_2^2",
     explanation:
-      "This is the negative log-likelihood written using the logit \\(x_i^\\top w\\), equivalent to the cross-entropy form with \\(p_i=\\sigma(x_i^\\top w)\\).",
-      comment: "Correct. "
+      "The target vector \\(y\\) is observed data and not an optimization variable in linear regression.",
+    comment: "Incorrect. "
   },
   {
     key: "C",
-    latex:
-      "\\sum_{i=1}^{n}\\log\\left(1+e^{-(2y_i-1)\\,x_i^{\\top}w}\\right)",
+    latex: "\\arg\\min_w \\lVert y - Xw \\rVert_2^2",
     explanation:
-      "This is logistic loss under labels in \\(\\{-1,+1\\}\\). The question typically assumes \\(y_i\\in\\{0,1\\}\\), so it won’t match the expected form.",
-      comment: "Not quite. "
+      "This is the standard ordinary least squares objective for linear regression, minimizing the sum of squared residuals with respect to the parameter vector \\(w\\).",
+    comment: "Correct. "
   },
   {
     key: "D",
-    latex:
-      "-\\sum_{i=1}^{n}\\log(\\hat{y}_i) + \\lambda\\lVert w\\rVert_2^2",
+    latex: "\\arg\\max_w \\lVert y - Xw \\rVert_2^2",
     explanation:
-      "This likelihood term is incomplete: it ignores the \\((1-y_i)\\log(1-p_i)\\) part. Regularization is plausible, but the base loss is wrong.",
-      comment: "Incorrect. "
+      "While the expression inside the norm is correct, linear regression minimizes squared error rather than maximizing it.",
+    comment: "Incorrect. "
   },
 ];
 
-const CORRECT_KEY = "B";
+const CORRECT_KEY = "C";
 
 type ConfettiPiece = {
   x: number;
@@ -285,19 +281,29 @@ export default function PracticeQuestionSection() {
                     }
                   }}
                   className={[
-                    "cursor-pointer overflow-hidden rounded-[12px] border border-black/10 bg-white/75 transition",
+                    "cursor-pointer overflow-hidden rounded-[12px] border border-black/10 transition",
                     "hover:-translate-y-[1px] hover:border-black/30 hover:shadow-[0_12px_22px_rgba(0,0,0,0.10)]",
                     choice.isOpen ? "shadow-[0_10px_18px_rgba(0,0,0,0.08)]" : "",
                     choice.isOpen && choice.isCorrect
-                      ? "border-emerald-500 bg-emerald-200/70"
-                      : "",
+                      ? "border-emerald-400 bg-emerald-200/60"
+                      : "bg-white/75",
                     choice.isOpen && choice.isWrong
-                      ? "border-red-500 bg-red-200/70"
+                      ? "border-red-400 bg-red-200/60"
                       : "",
                   ].join(" ")}
                 >
                   <div className="grid grid-cols-[42px_1fr_18px] items-start gap-2 px-3 py-3">
-                    <div className="mt-[2px] flex h-7 w-7 items-center justify-center rounded-full border border-black/10 bg-black/5 text-[14px] font-black text-black/70">
+                    <div
+                      className={[
+                        "mt-[2px] flex h-7 w-7 items-center justify-center rounded-full border border-black/10 text-[14px] font-black text-black/70",
+                        choice.isOpen && choice.isCorrect
+                          ? "border-emerald-500 bg-emerald-200/80 text-emerald-900"
+                          : "",
+                        choice.isOpen && choice.isWrong
+                          ? "border-red-500 bg-red-200/80 text-red-900"
+                          : "bg-black/5",
+                      ].join(" ")}
+                    >
                       {choice.key}
                     </div>
                     <div
@@ -325,7 +331,7 @@ export default function PracticeQuestionSection() {
                   <div
                     className={[
                       "max-h-0 overflow-hidden border-t border-black/10 bg-white/65 transition-[max-height] duration-200",
-                      choice.isOpen ? "max-h-[170px]" : "",
+                      choice.isOpen ? "max-h-[170px] bg-transparent" : "",
                     ].join(" ")}
                   >
                     <div className="px-3 pb-3 pt-2 text-[13.5px] leading-[1.5] text-black/70">

@@ -40,6 +40,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const confettiRef = useRef<HTMLCanvasElement | null>(null);
@@ -51,6 +52,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     if (!isOpen) {
       return;
     }
+    setIsSuccess(false);
 
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -184,15 +186,13 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     }
 
     setIsSubmitting(false);
-    setEmail("");
+    setIsSuccess(true);
     const rect = overlayRef.current?.getBoundingClientRect();
     const x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
     const y = rect ? rect.top + rect.height / 2 : window.innerHeight / 3;
     spawnConfetti(x, y);
 
-    window.setTimeout(() => {
-      onClose();
-    }, 300);
+    setEmail("");
   };
 
   if (!isOpen) {
@@ -219,34 +219,47 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
         >
           X
         </button>
-        <h3 className="text-[22px] font-extrabold tracking-[-0.02em]">
-          Join the waitlist
-        </h3>
-        <p className="mt-2 text-[14px] text-black/65">
-          Get early access updates.
-        </p>
-        <form onSubmit={handleSubmit} className="mt-5 grid gap-3">
-          <input
-            ref={inputRef}
-            type="email"
-            name="email"
-            placeholder="you@email.com"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            className="h-11 rounded-full border border-black/20 px-4 text-[14px] outline-none transition focus:border-black/60"
-            required
-          />
-          {errorMessage ? (
-            <p className="text-[12px] text-red-600">{errorMessage}</p>
-          ) : null}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="h-11 rounded-full bg-black text-[14px] font-semibold text-white transition hover:-translate-y-[1px] hover:shadow-[0_18px_36px_rgba(0,0,0,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isSubmitting ? "Submitting..." : "Join Waitlist"}
-          </button>
-        </form>
+        {isSuccess ? (
+          <div className="grid gap-2 py-6 text-center">
+            <div className="text-[22px] font-extrabold tracking-[-0.02em]">
+              You&rsquo;re in!
+            </div>
+            <p className="text-[14px] text-black/65">
+              Thanks for joining the waitlist.
+            </p>
+          </div>
+        ) : (
+          <>
+            <h3 className="text-[22px] font-extrabold tracking-[-0.02em]">
+              Join the waitlist
+            </h3>
+            <p className="mt-2 text-[14px] text-black/65">
+              Get early access updates.
+            </p>
+            <form onSubmit={handleSubmit} className="mt-5 grid gap-3">
+              <input
+                ref={inputRef}
+                type="email"
+                name="email"
+                placeholder="you@email.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="h-11 rounded-full border border-black/20 px-4 text-[14px] outline-none transition focus:border-black/60"
+                required
+              />
+              {errorMessage ? (
+                <p className="text-[12px] text-red-600">{errorMessage}</p>
+              ) : null}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="h-11 rounded-full bg-black text-[14px] font-semibold text-white transition hover:-translate-y-[1px] hover:shadow-[0_18px_36px_rgba(0,0,0,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSubmitting ? "Submitting..." : "Join Waitlist"}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );

@@ -335,7 +335,7 @@ export default function HomePage() {
       <section
         ref={whoRef}
         id="who"
-        className="min-h-screen snap-start px-6 pb-16 pt-24 md:px-10 md:pt-30 flex items-start"
+        className="min-h-screen snap-start px-6 py-20 md:px-10 md:py-24 flex items-center"
       >
         <div className="mx-auto flex w-full max-w-[1100px] flex-col items-center text-center">
           <h2 className="text-[48px] font-extrabold leading-[0.95] tracking-[-0.03em] md:text-[72px] lg:text-[92px]">
